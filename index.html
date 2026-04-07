@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Online Quiz</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
+    h1 { color: #2c3e50; }
+    .question { margin-bottom: 20px; padding: 10px; background: #fff; border-radius: 5px; }
+    button { margin-top: 20px; padding: 10px 15px; background: #3498db; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+    button:hover { background: #2980b9; }
+    #result { margin-top: 20px; font-weight: bold; color: black; } /* Score in black */
+    .btn-group { margin-top: 20px; }
+    .reset-btn { background: #e74c3c; }
+    .reset-btn:hover { background: #c0392b; }
+    .explanation { margin-top: 8px; font-size: 14px; }
+    .correct { color: #27ae60; } /* Green for correct */
+    .wrong { color: #e74c3c; }   /* Red for wrong */
+  </style>
+</head>
+<body>
+  <h1>Professional Online Quiz</h1>
+  <div id="quiz"></div>
+  <div class="btn-group">
+    <button onclick="submitQuiz()">Submit</button>
+    <button class="reset-btn" onclick="resetQuiz()">Reset</button>
+  </div>
+  <p id="result"></p>
+
+  <script>
+    // Questions with explanations
+    const questions = [
+      { question: "What is the capital of India?", options: {A:"Delhi",B:"Mumbai",C:"Kolkata",D:"Chennai"}, correct:"A", explanation:"New Delhi is the capital of India, while Mumbai is the financial hub." },
+      { question: "Which language runs in a web browser?", options: {A:"Python",B:"Java",C:"JavaScript",D:"C++"}, correct:"C", explanation:"JavaScript is the only language that natively runs in browsers." },
+      { question: "Who developed the theory of relativity?", options: {A:"Newton",B:"Einstein",C:"Tesla",D:"Galileo"}, correct:"B", explanation:"Albert Einstein proposed the theory of relativity in the early 20th century." },
+      { question: "Which planet is known as the Red Planet?", options: {A:"Venus",B:"Mars",C:"Jupiter",D:"Saturn"}, correct:"B", explanation:"Mars is called the Red Planet due to its iron oxide-rich soil." },
+      { question: "HTML stands for?", options: {A:"Hyper Trainer Marking Language",B:"Hyper Text Markup Language",C:"Hyper Text Making Language",D:"High Text Machine Language"}, correct:"B", explanation:"HTML stands for Hyper Text Markup Language, used to structure web pages." },
+      { question: "Which company created Windows OS?", options: {A:"Apple",B:"Microsoft",C:"Google",D:"IBM"}, correct:"B", explanation:"Microsoft developed Windows, first released in 1985." },
+      { question: "CSS is used for?", options: {A:"Styling web pages",B:"Database management",C:"Server scripting",D:"Networking"}, correct:"A", explanation:"CSS (Cascading Style Sheets) is used to style and format web pages." },
+      { question: "Which gas do humans need to survive?", options: {A:"Carbon Dioxide",B:"Oxygen",C:"Nitrogen",D:"Hydrogen"}, correct:"B", explanation:"Humans need oxygen for cellular respiration." },
+      { question: "Which is the largest ocean?", options: {A:"Atlantic",B:"Indian",C:"Pacific",D:"Arctic"}, correct:"C", explanation:"The Pacific Ocean is the largest, covering more than 30% of Earth's surface." },
+      { question: "Which device is used to process data?", options: {A:"Monitor",B:"Keyboard",C:"CPU",D:"Mouse"}, correct:"C", explanation:"The CPU (Central Processing Unit) processes data and instructions." }
+    ];
+
+    function loadQuiz() {
+      const quizDiv = document.getElementById("quiz");
+      quizDiv.innerHTML = "";
+      questions.forEach((q, i) => {
+        quizDiv.innerHTML += `
+          <div class="question" id="q${i}">
+            <p>${i+1}. ${q.question}</p>
+            ${Object.entries(q.options).map(([key,val]) =>
+              `<label><input type="radio" name="q${i}" value="${key}"> ${val}</label><br>`
+            ).join("")}
+          </div>
+        `;
+      });
+      document.getElementById("result").innerText = "";
+    }
+
+    function submitQuiz() {
+      let score = 0;
+
+      questions.forEach((q, i) => {
+        const selected = document.querySelector(`input[name="q${i}"]:checked`);
+        const questionDiv = document.getElementById(`q${i}`);
+        let explanationText = "";
+
+        if (selected && selected.value === q.correct) {
+          score++;
+          explanationText = `<div class="explanation correct">✔ Correct. ${q.explanation}</div>`;
+        } else if (selected) {
+          explanationText = `<div class="explanation wrong">✘ Wrong. ${q.explanation}</div>`;
+        } else {
+          explanationText = `<div class="explanation wrong">No answer selected. ${q.explanation}</div>`;
+        }
+
+        // Append explanation inside the same question block
+        questionDiv.innerHTML += explanationText;
+      });
+
+      document.getElementById("result").innerHTML =
+        `Your score: ${score}/${questions.length}`;
+    }
+
+    function resetQuiz() {
+      loadQuiz(); // reload quiz fresh
+    }
+
+    loadQuiz();
+  </script>
+</body>
+</html>
